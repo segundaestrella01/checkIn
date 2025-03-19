@@ -15,24 +15,6 @@ interface MoodData {
 }
 
 /**
- * Custom fetch function that uses the CORS proxy for Notion API requests
- */
-const proxyFetch = async (url: string, options: RequestInit = {}): Promise<Response> => {
-  // Only proxy requests to Notion API
-  if (url.startsWith(NOTION_API_BASE)) {
-    const proxiedUrl = `${PROXY_URL}${encodeURIComponent(url)}`;
-    return fetch(proxiedUrl, {
-      ...options,
-      headers: {
-        ...options.headers,
-        'Content-Type': 'application/json',
-      }
-    });
-  }
-  return fetch(url, options);
-};
-
-/**
  * Initialize the Notion client with the API key
  */
 export const initNotionClient = (apiKey: string, databaseId: string) => {
@@ -44,31 +26,6 @@ export const initNotionClient = (apiKey: string, databaseId: string) => {
     localStorage.setItem('notion_api_key', apiKey);
     localStorage.setItem('notion_database_id', databaseId);
   }
-  
-  return getNotionClient();
-};
-
-/**
- * Get a configured Notion client instance
- */
-export const getNotionClient = () => {
-  // Try to load from localStorage if not provided
-  if (!NOTION_API_KEY && typeof window !== 'undefined') {
-    NOTION_API_KEY = localStorage.getItem('notion_api_key') || '';
-  }
-  
-  if (!NOTION_DATABASE_ID && typeof window !== 'undefined') {
-    NOTION_DATABASE_ID = localStorage.getItem('notion_database_id') || '';
-  }
-
-  if (!NOTION_API_KEY) {
-    return null;
-  }
-
-  return new Client({ 
-    auth: NOTION_API_KEY,
-    fetch: proxyFetch
-  });
 };
 
 /**
@@ -84,72 +41,50 @@ export const isNotionConfigured = (): boolean => {
 };
 
 /**
- * Get the configured database ID
+ * Get the stored credentials
  */
-export const getNotionDatabaseId = (): string => {
-  if (typeof window === 'undefined') return '';
-  return NOTION_DATABASE_ID || localStorage.getItem('notion_database_id') || '';
+const getCredentials = () => {
+  if (typeof window === 'undefined') return { apiKey: '', databaseId: '' };
+  
+  const apiKey = NOTION_API_KEY || localStorage.getItem('notion_api_key') || '';
+  const databaseId = NOTION_DATABASE_ID || localStorage.getItem('notion_database_id') || '';
+  
+  return { apiKey, databaseId };
 };
 
 /**
- * Save a mood entry to the Notion database
+ * Save a mood entry to the Notion database through the API route
  */
 export const saveMoodToNotion = async (moodData: MoodData) => {
-  const notion = getNotionClient();
+  const { apiKey, databaseId } = getCredentials();
   
-  if (!notion) {
+  if (!apiKey || !databaseId) {
     throw new Error('Notion client not initialized. Please provide API key and database ID.');
-  }
-  
-  const databaseId = getNotionDatabaseId();
-  
-  if (!databaseId) {
-    throw new Error('Notion database ID not provided.');
   }
 
   try {
-    // Create a new page in the database with the mood data
-    const response = await notion.pages.create({
-      parent: {
-        database_id: databaseId,
+    const response = await fetch('/api/notion', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      properties: {
-        Name: {
-          title: [
-            {
-              text: {
-                content: `Mood: ${moodData.mood}`
-              }
-            }
-          ]
-        },
-        Mood: {
-          rich_text: [
-            {
-              text: {
-                content: moodData.mood
-              }
-            }
-          ]
-        },
-        Emoji: {
-          rich_text: [
-            {
-              text: {
-                content: moodData.emoji
-              }
-            }
-          ]
-        },
-        Date: {
-          date: {
-            start: moodData.date.toISOString().split('T')[0],
-          }
+      body: JSON.stringify({
+        action: 'saveMood',
+        apiKey,
+        databaseId,
+        data: {
+          ...moodData,
+          date: moodData.date.toISOString()
         }
-      }
+      })
     });
 
-    return response;
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to save to Notion');
+    }
+
+    return await response.json();
   } catch (error) {
     console.error('Error saving to Notion:', error);
     throw error;
