@@ -1,107 +1,72 @@
-# This repo is no longer maintained. Consider using `npm init vite` and selecting the `svelte` option or — if you want a full-fledged app framework — use [SvelteKit](https://kit.svelte.dev), the official application framework for Svelte.
+# Daily Mood Check-In
 
----
+A Progressive Web App (PWA) that allows users to track their daily mood states with a simple, intuitive interface.
 
-# svelte app
+## Purpose
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+The Daily Mood Check-In app provides a straightforward way for users to record their prevalent mood at the end of each day. This self-reflection practice can help with:
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+- Mental health awareness
+- Mood pattern recognition
+- Emotional self-awareness
+- Building a personal mood history
+
+## Features
+
+- Select from seven mood states: angry, tired, stressed, anxious, calm, energetic, and happy
+- Each mood is represented by a descriptive emoji for quick visual recognition
+- PWA functionality allows for installation on mobile devices and offline usage
+- Local storage saves mood history directly on the user's device
+- Simple, responsive interface that works well on both desktop and mobile devices
+
+## Tech Stack
+
+- **Frontend Framework**: [Svelte](https://svelte.dev) - A lightweight, component-based JavaScript framework
+- **Build Tool**: [Rollup](https://rollupjs.org) - Module bundler for JavaScript
+- **PWA Features**: Service Workers using [Workbox](https://developers.google.com/web/tools/workbox) for offline capabilities
+- **Server**: [sirv](https://github.com/lukeed/sirv) for static file serving
+- **CSS**: Native CSS with responsive design patterns
+
+## Available Commands
 
 ```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
-```
-
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
-
-
-## Get started
-
-Install the dependencies...
-
-```bash
-cd svelte-app
+# Install dependencies
 npm install
-```
 
-...then start [Rollup](https://rollupjs.org):
-
-```bash
+# Start development server with hot-reloading
 npm run dev
-```
 
-Navigate to [localhost:8080](http://localhost:8080). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
-
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
-
-If you're using [Visual Studio Code](https://code.visualstudio.com/) we recommend installing the official extension [Svelte for VS Code](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode). If you are using other editors you may need to install a plugin in order to get syntax highlighting and intellisense.
-
-## Building and running in production mode
-
-To create an optimised version of the app:
-
-```bash
+# Build optimized production version
 npm run build
+
+# Serve the production build
+npm run start
+
+# Serve as a SPA (useful for client-side routing)
+sirv public --single
 ```
 
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
+## Development
 
+The application structure follows Svelte conventions:
 
-## Single-page app mode
+- `src/` - Contains the application source code
+  - `components/` - Reusable Svelte components
+  - `App.svelte` - Main application component
+  - `main.js` - Application entry point
+- `public/` - Static assets and production build destination
+  - `service-worker.js` - PWA offline functionality
+  - `manifest.json` - PWA installation configuration
+  - `icons/` - App icons for various device sizes
 
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
+## Customization
 
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
+The mood options can be easily customized by modifying the `moods` array in the `src/App.svelte` file.
 
-```js
-"start": "sirv public --single"
-```
+## Deployment
 
-## Using TypeScript
+After building the app with `npm run build`, the contents of the `public` directory can be deployed to any static file hosting service like Vercel, Netlify, or GitHub Pages.
 
-This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
+## Browser Support
 
-```bash
-node scripts/setupTypeScript.js
-```
-
-Or remove the script via:
-
-```bash
-rm scripts/setupTypeScript.js
-```
-
-If you want to use `baseUrl` or `path` aliases within your `tsconfig`, you need to set up `@rollup/plugin-alias` to tell Rollup to resolve the aliases. For more info, see [this StackOverflow question](https://stackoverflow.com/questions/63427935/setup-tsconfig-path-in-svelte).
-
-## Deploying to the web
-
-### With [Vercel](https://vercel.com)
-
-Install `vercel` if you haven't already:
-
-```bash
-npm install -g vercel
-```
-
-Then, from within your project folder:
-
-```bash
-cd public
-vercel deploy --name my-project
-```
-
-### With [surge](https://surge.sh/)
-
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public my-project.surge.sh
-```
+The app supports all modern browsers with PWA capabilities. For the best experience, use the latest versions of Chrome, Firefox, Safari, or Edge.
