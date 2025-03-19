@@ -55,36 +55,36 @@ export default function NotionConfig() {
   };
 
   return (
-    <div className="my-5 p-4 rounded-lg bg-gray-50">
+    <div className="my-6 p-6 rounded-[24px] bg-white/80 backdrop-blur-sm shadow-lg">
       {configSuccess && (
-        <div className="mb-4 p-3 rounded bg-green-50 text-green-800 text-sm">
+        <div className="mb-4 p-4 rounded-2xl bg-[var(--secondary-color)] text-[var(--primary-color)] text-sm font-medium">
           {configSuccess}
         </div>
       )}
       
       {(!configured || showConfig) ? (
         <div className="text-left">
-          <h3 className="text-lg font-semibold mb-2">Configure Notion API</h3>
-          <p className="mb-5 text-sm text-gray-600">
+          <h3 className="text-2xl font-semibold mb-3 text-gradient">Configure Notion API</h3>
+          <p className="mb-6 text-gray-600 text-lg">
             To save your moods to Notion, please provide your Notion API key and database ID.{' '}
             <a 
               href="https://developers.notion.com/docs/getting-started" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-blue-500 underline hover:text-blue-600"
+              className="text-[var(--primary-color)] underline hover:opacity-80"
             >
               Learn how to get these credentials
             </a>
           </p>
           
           {configError && (
-            <div className="mb-4 p-3 rounded bg-red-50 text-red-700 text-sm">
+            <div className="mb-4 p-4 rounded-2xl bg-red-50 text-red-700 text-sm">
               {configError}
             </div>
           )}
           
-          <div className="mb-4">
-            <label htmlFor="apiKey" className="block mb-1 font-medium">
+          <div className="mb-5">
+            <label htmlFor="apiKey" className="block mb-2 font-medium text-[var(--text-color)]">
               Notion API Key
             </label>
             <input
@@ -93,12 +93,12 @@ export default function NotionConfig() {
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
               placeholder="secret_..."
-              className="w-full p-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border-2 border-gray-200 rounded-xl text-base focus:outline-none focus:border-[var(--primary-color)] transition-colors"
             />
           </div>
           
-          <div className="mb-4">
-            <label htmlFor="databaseId" className="block mb-1 font-medium">
+          <div className="mb-6">
+            <label htmlFor="databaseId" className="block mb-2 font-medium text-[var(--text-color)]">
               Notion Database ID
             </label>
             <input
@@ -107,20 +107,20 @@ export default function NotionConfig() {
               value={databaseId}
               onChange={(e) => setDatabaseId(e.target.value)}
               placeholder="a1b2c3d4-..."
-              className="w-full p-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border-2 border-gray-200 rounded-xl text-base focus:outline-none focus:border-[var(--primary-color)] transition-colors"
             />
           </div>
           
-          <div className="flex gap-2 mt-4">
+          <div className="flex gap-3">
             <button
               onClick={saveConfig}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              className="px-6 py-3 bg-gradient text-white rounded-full hover:opacity-90 transition-opacity shadow-md font-medium"
             >
               Save Configuration
             </button>
             <button
               onClick={toggleConfig}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
+              className="px-6 py-3 bg-white text-[var(--text-color)] rounded-full hover:bg-gray-50 transition-colors shadow-md font-medium"
             >
               Cancel
             </button>
@@ -128,17 +128,20 @@ export default function NotionConfig() {
         </div>
       ) : (
         <div className="flex items-center justify-between flex-wrap gap-4">
-          <p className="font-medium">✅ Notion API configured</p>
-          <div className="flex gap-2">
+          <p className="font-medium text-lg flex items-center gap-2">
+            <span className="text-[var(--primary-color)]">✓</span> 
+            Notion API configured
+          </p>
+          <div className="flex gap-3">
             <button
               onClick={toggleConfig}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              className="px-6 py-3 bg-gradient text-white rounded-full hover:opacity-90 transition-opacity shadow-md font-medium"
             >
               Edit Configuration
             </button>
             <button
               onClick={resetConfig}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
+              className="px-6 py-3 bg-white text-[var(--text-color)] rounded-full hover:bg-gray-50 transition-colors shadow-md font-medium"
             >
               Reset
             </button>

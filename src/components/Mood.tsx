@@ -10,19 +10,22 @@ export default function Mood({ emoji, name, selected = false, onSelect }: MoodPr
     <div 
       className={`
         flex flex-col items-center justify-center
-        w-[100px] h-[100px] m-2.5 p-[15px]
-        rounded-xl cursor-pointer
-        transition-all duration-200 ease-in-out
-        border-2 border-transparent
-        bg-gray-100
-        hover:transform hover:-translate-y-[3px]
-        hover:shadow-lg
-        ${selected ? 'border-sky-700 bg-sky-700 -translate-y-[3px] shadow-lg' : ''}
+        w-[90px] h-[90px] m-2
+        rounded-[18px] cursor-pointer
+        transition-all duration-300 ease-in-out
+        ${selected 
+          ? 'bg-white hover:bg-secondary-color hover:scale-105 shadow-md' 
+          :'bg-gradient text-white transform scale-105 shadow-lg' 
+        }
       `}
       onClick={onSelect}
     >
-      <div className="text-[2.5rem] mb-2">{emoji}</div>
-      <div className={`text-sm font-medium text-center ${selected ? 'text-neutral-50' : 'text-gray-800'}`}>{name}</div>
+      <div className="text-[1.8rem] mb-1 transition-transform duration-300 ease-in-out">
+        {emoji}
+      </div>
+      <div className={`text-sm font-medium text-center transition-colors duration-300 ${selected ? 'text-gray-700' : 'text-white'}`}>
+        {name}
+      </div>
     </div>
   );
 }

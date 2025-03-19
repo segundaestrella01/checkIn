@@ -94,31 +94,30 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="bg-white">
-          <div className="mb-8 flex flex-col items-center">
-            <div className="w-full flex flex-row">
+    <div className="min-h-screen bg-[var(--background-color)]">
+      <div className="w-full h-full md:max-w-4xl md:mx-auto px-4 py-8">
+        <div className="mb-8 flex flex-col items-center md:min-h-0 backdrop-blur-sm rounded-[32px] shadow-xl">
+          <div className="w-full flex flex-row">
               <button
                 onClick={() => setShowSettings(!showSettings)}
-                className="p-2 text-2xl bg-transparent border-none cursor-pointer align"
+                className="right-0 p-2 text-2xl bg-transparent border-none cursor-pointer hover:opacity-75 transition-opacity"
                 title="Settings"
               >
                 ⚙️
               </button>
             </div>
-            <h1 className="text-2xl font-bold text-center text-gray-800 mt-1">
-              Daily Mood Check-In
+            <h1 className="text-4xl md:text-5xl font-bold text-center text-gradient mb-3">
+              How are you feeling?
             </h1>
-            <p className="text-gray-600 text-center italic mt-2">{todayDate}</p>
+            <p className="text-[var(--secondary-dark-text-color)] text-center text-lg">{todayDate}</p>
           </div>
 
           {showSettings ? (
             <div className="settings-panel">
-              <h2 className="text-xl font-semibold mb-4">Settings</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gradient">Settings</h2>
               <NotionConfig />
               <button
-                className="mt-4 px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
+                className="mt-4 px-6 py-3 bg-white rounded-full text-[var(--text-color)] hover:bg-gray-50 transition-colors shadow-md"
                 onClick={() => setShowSettings(false)}
               >
                 Close Settings
@@ -126,14 +125,14 @@ export default function Home() {
             </div>
           ) : !submitted ? (
             <>
-              <div className="text-center mb-8">
-                <p className="text-lg mb-2">How are you feeling today?</p>
-                <p className="text-sm text-gray-600">
-                  Select the mood that best represents how you felt today.
+              <div className="text-center mb-10">
+                <p className="text-xl md:text-2xl mb-3 text-[var(--text-color)]">Take a moment to reflect</p>
+                <p className="text-[var(--secondary-text-color)] text-lg">
+                  Select the mood that best describes your current state
                 </p>
               </div>
 
-              <div className="flex flex-wrap justify-center gap-4 mb-8">
+              <div className="flex flex-wrap justify-center gap-4 mb-12">
                 {moods.map((mood) => (
                   <Mood
                     key={mood.id}
@@ -145,58 +144,58 @@ export default function Home() {
                 ))}
               </div>
 
-              <div className="text-center">
+              <div className="text-center bottom-8 left-0 right-0 md:static">
                 <button
                   className={`
-                    px-8 py-3 rounded-full font-medium transition-all
-                    ${selectedMood ? 'bg-blue-500 hover:bg-blue-600 text-white' : 'bg-gray-200 text-gray-500 cursor-not-allowed'}
+                    px-12 py-4 rounded-full text-lg font-medium transition-all
+                    ${selectedMood 
+                      ? 'bg-gradient text-white hover:opacity-90 shadow-lg' 
+                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    }
                     ${savingToNotion ? 'opacity-75 cursor-wait' : ''}
                   `}
                   onClick={submitMood}
                   disabled={!selectedMood || savingToNotion}
                 >
-                  {savingToNotion ? 'Saving...' : 'Submit'}
+                  {savingToNotion ? 'Recording your mood...' : 'Record Mood'}
                 </button>
 
                 {notionConfigured && (
                   <div className="mt-4">
-                    <span className="inline-block px-3 py-1 bg-green-50 text-green-700 text-sm rounded-full">
-                      Notion Sync Enabled
+                    <span className="inline-block px-4 py-2 bg-[var(--secondary-color)] text-[var(--primary-color)] text-sm rounded-full">
+                      Synced with Notion
                     </span>
                   </div>
                 )}
               </div>
             </>
           ) : (
-            <div className="text-center">
-              <div className="text-5xl mb-6">✅</div>
-              <h2 className="text-2xl font-bold mb-4">Thanks for checking in!</h2>
-              <p className="mb-4">You marked your mood today as:</p>
-              <div className="mb-8">
-                <div className="text-6xl mb-3">{selectedMood?.emoji}</div>
-                <div className="text-xl font-medium">{selectedMood?.name}</div>
+            <div className="text-center h-[calc(100vh-200px)] md:h-auto flex flex-col justify-center items-center">
+              <div className="w-24 h-24 bg-gradient rounded-full flex items-center justify-center mb-8">
+                <span className="text-4xl">{selectedMood?.emoji}</span>
               </div>
+              <h2 className="text-3xl font-bold mb-4 text-gradient">Mood Recorded!</h2>
+              <p className="text-xl mb-6 text-gray-600">You're feeling {selectedMood?.name.toLowerCase()}</p>
 
               {notionError ? (
-                <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
+                <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-2xl max-w-md">
                   {notionError}
                 </div>
               ) : notionConfigured ? (
-                <div className="mb-6 text-green-700 font-medium">
-                  ✅ Saved to Notion
+                <div className="mb-6 text-[var(--primary-color)] font-medium flex items-center gap-2">
+                  <span className="text-xl">✓</span> Saved to Notion
                 </div>
               ) : null}
 
               <button
-                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition-colors"
+                className="px-8 py-3 bg-white text-[var(--text-color)] rounded-full hover:bg-gray-50 transition-colors shadow-md mt-4"
                 onClick={resetForm}
               >
-                Check in again
+                Record Another Mood
               </button>
             </div>
           )}
         </div>
       </div>
-    </div>
   );
 }
