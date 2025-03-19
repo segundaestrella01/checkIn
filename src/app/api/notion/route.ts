@@ -29,7 +29,8 @@ export async function POST(request: Request) {
           );
         }
         
-        const response = await notion.pages.create({
+        // Create the main page first
+        const pageResponse = await notion.pages.create({
           parent: {
             database_id: databaseId,
           },
@@ -60,7 +61,30 @@ export async function POST(request: Request) {
           }
         });
 
-        return NextResponse.json(response);
+        // If there's a reflection note, add it as a paragraph block
+        if (data.reflectionNote) {
+          await notion.blocks.children.append({
+            block_id: pageResponse.id,
+            children: [
+              {
+                object: 'block',
+                type: 'paragraph',
+                paragraph: {
+                  rich_text: [
+                    {
+                      type: 'text',
+                      text: {
+                        content: data.reflectionNote
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          });
+        }
+
+        return NextResponse.json(pageResponse);
 
       default:
         return NextResponse.json(

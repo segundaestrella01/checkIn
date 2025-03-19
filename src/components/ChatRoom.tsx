@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { saveMoodToNotion } from '@/lib/notion';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -17,6 +18,7 @@ export default function ChatRoom({ onTerminate, initialMood }: ChatRoomProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -100,6 +102,59 @@ export default function ChatRoom({ onTerminate, initialMood }: ChatRoomProps) {
     }
   };
 
+  const handleEndSession = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: "Please provide a brief reflection note summarizing our conversation about my mood today.",
+          isFirstMessage: false,
+          history: messages,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to get final response');
+
+      const data = await response.json();
+      const finalNote = data.message;
+
+      // Add the final exchange to the chat
+      setMessages(prev => [
+        ...prev,
+        { role: 'assistant', content: "Before we end this session, let me provide a brief summary of our conversation." },
+        { role: 'assistant', content: finalNote }
+      ]);
+
+      // Save to Notion with the reflection note
+      setIsSaving(true);
+      await saveMoodToNotion({
+        mood: initialMood.name,
+        emoji: initialMood.emoji,
+        date: new Date(),
+        reflectionNote: finalNote
+      });
+
+      // Wait a moment to show the final messages before ending
+      setTimeout(() => {
+        onTerminate();
+      }, 3000);
+
+    } catch (error) {
+      console.error('Error ending session:', error);
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: "I apologize, but I'm having trouble saving our conversation. You can still end the session."
+      }]);
+    } finally {
+      setIsLoading(false);
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="flex flex-col h-[80vh] bg-white/20 backdrop-blur-sm rounded-[24px] p-6 shadow-lg">
       {/* Chat header */}
@@ -153,13 +208,13 @@ export default function ChatRoom({ onTerminate, initialMood }: ChatRoomProps) {
           onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
           placeholder="Type your message..."
           className="flex-1 p-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:border-[var(--primary-color)] transition-colors bg-white/50"
-          disabled={isLoading}
+          disabled={isLoading || isSaving}
         />
         <button
           onClick={sendMessage}
-          disabled={!inputMessage.trim() || isLoading}
+          disabled={!inputMessage.trim() || isLoading || isSaving}
           className={`px-6 py-3 rounded-full font-medium transition-all ${
-            !inputMessage.trim() || isLoading
+            !inputMessage.trim() || isLoading || isSaving
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
               : 'bg-gradient text-white hover:opacity-90 shadow-md'
           }`}
@@ -170,10 +225,13 @@ export default function ChatRoom({ onTerminate, initialMood }: ChatRoomProps) {
 
       {/* Terminate button */}
       <button
-        onClick={onTerminate}
-        className="mt-4 px-6 py-3 bg-white text-[var(--accent-color)] rounded-full hover:bg-gray-50 transition-colors shadow-md font-medium"
+        onClick={handleEndSession}
+        disabled={isLoading || isSaving}
+        className={`mt-4 px-6 py-3 bg-white text-[var(--accent-color)] rounded-full hover:bg-gray-50 transition-colors shadow-md font-medium ${
+          (isLoading || isSaving) ? 'opacity-50 cursor-not-allowed' : ''
+        }`}
       >
-        End Session
+        {isSaving ? 'Saving reflection...' : 'End Session'}
       </button>
     </div>
   );

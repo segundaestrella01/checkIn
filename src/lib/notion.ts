@@ -12,6 +12,7 @@ interface MoodData {
   mood: string;
   emoji: string;
   date: Date;
+  reflectionNote?: string;
 }
 
 /**
