@@ -117,7 +117,7 @@ export default function Home() {
               <h2 className="text-2xl font-semibold mb-4 text-gradient">Settings</h2>
               <NotionConfig />
               <button
-                className="mt-4 px-6 py-3 bg-white rounded-full text-[var(--text-color)] hover:bg-gray-50 transition-colors shadow-md"
+                className="mt-4 px-6 py-3 bg-white rounded-full text-[var(--accent-color)] hover:bg-gray-50 transition-colors shadow-md"
                 onClick={() => setShowSettings(false)}
               >
                 Close Settings

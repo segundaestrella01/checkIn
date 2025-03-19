@@ -55,7 +55,7 @@ export default function NotionConfig() {
   };
 
   return (
-    <div className="my-6 p-6 rounded-[24px] bg-white/80 backdrop-blur-sm shadow-lg">
+    <div className="my-6 p-6 rounded-[24px] bg-white/20 backdrop-blur-sm shadow-lg">
       {configSuccess && (
         <div className="mb-4 p-4 rounded-2xl bg-[var(--secondary-color)] text-[var(--primary-color)] text-sm font-medium">
           {configSuccess}
@@ -65,7 +65,7 @@ export default function NotionConfig() {
       {(!configured || showConfig) ? (
         <div className="text-left">
           <h3 className="text-2xl font-semibold mb-3 text-gradient">Configure Notion API</h3>
-          <p className="mb-6 text-gray-600 text-lg">
+          <p className="mb-6 text-[var(--secondary-text-color)] text-lg">
             To save your moods to Notion, please provide your Notion API key and database ID.{' '}
             <a 
               href="https://developers.notion.com/docs/getting-started" 
@@ -120,7 +120,7 @@ export default function NotionConfig() {
             </button>
             <button
               onClick={toggleConfig}
-              className="px-6 py-3 bg-white text-[var(--text-color)] rounded-full hover:bg-gray-50 transition-colors shadow-md font-medium"
+              className="px-6 py-3 bg-white text-[var(--accent-color)] rounded-full hover:bg-gray-50 transition-colors shadow-md font-medium"
             >
               Cancel
             </button>
@@ -141,7 +141,7 @@ export default function NotionConfig() {
             </button>
             <button
               onClick={resetConfig}
-              className="px-6 py-3 bg-white text-[var(--text-color)] rounded-full hover:bg-gray-50 transition-colors shadow-md font-medium"
+              className="px-6 py-3 bg-white text-[var(--accent-color)] rounded-full hover:bg-gray-50 transition-colors shadow-md font-medium"
             >
               Reset
             </button>
