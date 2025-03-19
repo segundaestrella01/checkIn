@@ -94,18 +94,20 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <div className="relative mb-8">
-            <button
-              onClick={() => setShowSettings(!showSettings)}
-              className="absolute -top-2 right-0 p-2 text-2xl bg-transparent border-none cursor-pointer"
-              title="Settings"
-            >
-              ⚙️
-            </button>
-            <h1 className="text-2xl font-bold text-center text-gray-800 mt-6">
+        <div className="bg-white">
+          <div className="mb-8 flex flex-col items-center">
+            <div className="w-full flex flex-row">
+              <button
+                onClick={() => setShowSettings(!showSettings)}
+                className="p-2 text-2xl bg-transparent border-none cursor-pointer align"
+                title="Settings"
+              >
+                ⚙️
+              </button>
+            </div>
+            <h1 className="text-2xl font-bold text-center text-gray-800 mt-1">
               Daily Mood Check-In
             </h1>
             <p className="text-gray-600 text-center italic mt-2">{todayDate}</p>

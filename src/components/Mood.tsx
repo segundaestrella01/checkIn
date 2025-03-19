@@ -17,12 +17,12 @@ export default function Mood({ emoji, name, selected = false, onSelect }: MoodPr
         bg-gray-100
         hover:transform hover:-translate-y-[3px]
         hover:shadow-lg
-        ${selected ? 'border-[#4a90e2] bg-[#e6f2ff] -translate-y-[3px] shadow-lg' : ''}
+        ${selected ? 'border-sky-700 bg-sky-700 -translate-y-[3px] shadow-lg' : ''}
       `}
       onClick={onSelect}
     >
       <div className="text-[2.5rem] mb-2">{emoji}</div>
-      <div className="text-sm font-medium text-center text-gray-800">{name}</div>
+      <div className={`text-sm font-medium text-center ${selected ? 'text-neutral-50' : 'text-gray-800'}`}>{name}</div>
     </div>
   );
 }
