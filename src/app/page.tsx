@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Mood from '@/components/Mood';
 import NotionConfig from '@/components/NotionConfig';
+import ChatRoom from '@/components/ChatRoom';
 import { isNotionConfigured, saveMoodToNotion } from '@/lib/notion';
 
 interface MoodOption {
@@ -24,12 +25,13 @@ const moods: MoodOption[] = [
 export default function Home() {
   const [selectedMood, setSelectedMood] = useState<MoodOption | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const [todayDate, setTodayDate] = useState('');
   const [notionConfigured, setNotionConfigured] = useState(false);
   const [savingToNotion, setSavingToNotion] = useState(false);
   const [notionError, setNotionError] = useState('');
   const [showSettings, setShowSettings] = useState(false);
-
+  console.debug(selectedMood,showChat)
   useEffect(() => {
     // Format today's date
     const today = new Date();
@@ -85,12 +87,14 @@ export default function Home() {
     }
     
     setSubmitted(true);
+    setShowChat(true);
   };
   
   const resetForm = () => {
     setSelectedMood(null);
     setSubmitted(false);
     setNotionError('');
+    setShowChat(false);
   };
 
   return (
@@ -123,7 +127,7 @@ export default function Home() {
                 Close Settings
               </button>
             </div>
-          ) : !submitted ? (
+          ) : !submitted && !showChat ? (
             <>
               <div className="text-center mb-10">
                 <p className="text-xl md:text-2xl mb-3 text-[var(--text-color)]">Take a moment to reflect</p>
@@ -154,10 +158,10 @@ export default function Home() {
                     }
                     ${savingToNotion ? 'opacity-75 cursor-wait' : ''}
                   `}
-                  onClick={submitMood}
-                  disabled={!selectedMood || savingToNotion}
+                  onClick={() => setShowChat(true)}
+                  disabled={!selectedMood}
                 >
-                  {savingToNotion ? 'Recording your mood...' : 'Record Mood'}
+                  Record Mood
                 </button>
 
                 {notionConfigured && (
@@ -170,30 +174,42 @@ export default function Home() {
               </div>
             </>
           ) : (
-            <div className="text-center h-[calc(100vh-200px)] md:h-auto flex flex-col justify-center items-center">
-              <div className="w-24 h-24 bg-gradient rounded-full flex items-center justify-center mb-8">
-                <span className="text-4xl">{selectedMood?.emoji}</span>
-              </div>
-              <h2 className="text-3xl font-bold mb-4 text-gradient">Mood Recorded!</h2>
-              <p className="text-xl mb-6 text-gray-600">You're feeling {selectedMood?.name.toLowerCase()}</p>
+            <>
+              {showChat && selectedMood ? (
+                <ChatRoom 
+                  initialMood={{
+                    name: selectedMood.name,
+                    emoji: selectedMood.emoji
+                  }}
+                  onTerminate={resetForm}
+                />
+              ) : (
+                <div className="text-center h-[calc(100vh-200px)] md:h-auto flex flex-col justify-center items-center">
+                  <div className="w-24 h-24 bg-gradient rounded-full flex items-center justify-center mb-8">
+                    <span className="text-4xl">{selectedMood?.emoji}</span>
+                  </div>
+                  <h2 className="text-3xl font-bold mb-4 text-gradient">Mood Recorded!</h2>
+                  <p className="text-xl mb-6 text-gray-600">You're feeling {selectedMood?.name.toLowerCase()}</p>
 
-              {notionError ? (
-                <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-2xl max-w-md">
-                  {notionError}
-                </div>
-              ) : notionConfigured ? (
-                <div className="mb-6 text-[var(--primary-color)] font-medium flex items-center gap-2">
-                  <span className="text-xl">✓</span> Saved to Notion
-                </div>
-              ) : null}
+                  {notionError ? (
+                    <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-2xl max-w-md">
+                      {notionError}
+                    </div>
+                  ) : notionConfigured ? (
+                    <div className="mb-6 text-[var(--primary-color)] font-medium flex items-center gap-2">
+                      <span className="text-xl">✓</span> Saved to Notion
+                    </div>
+                  ) : null}
 
-              <button
-                className="px-8 py-3 bg-white text-[var(--text-color)] rounded-full hover:bg-gray-50 transition-colors shadow-md mt-4"
-                onClick={resetForm}
-              >
-                Record Another Mood
-              </button>
-            </div>
+                  <button
+                    className="px-8 py-3 bg-white text-[var(--text-color)] rounded-full hover:bg-gray-50 transition-colors shadow-md mt-4"
+                    onClick={resetForm}
+                  >
+                    Record Another Mood
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
