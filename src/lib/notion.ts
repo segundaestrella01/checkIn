@@ -1,22 +1,49 @@
 import { Client } from "@notionhq/client";
-import 'cross-fetch/polyfill'; // Required for the Notion client in some environments
 
 // Environment variables for Notion API
 let NOTION_API_KEY = '';
 let NOTION_DATABASE_ID = '';
 
+// CORS proxy configuration
+const PROXY_URL = 'https://corsproxy.io/?';
+const NOTION_API_BASE = 'https://api.notion.com';
+
+interface MoodData {
+  mood: string;
+  emoji: string;
+  date: Date;
+}
+
+/**
+ * Custom fetch function that uses the CORS proxy for Notion API requests
+ */
+const proxyFetch = async (url: string, options: RequestInit = {}): Promise<Response> => {
+  // Only proxy requests to Notion API
+  if (url.startsWith(NOTION_API_BASE)) {
+    const proxiedUrl = `${PROXY_URL}${encodeURIComponent(url)}`;
+    return fetch(proxiedUrl, {
+      ...options,
+      headers: {
+        ...options.headers,
+        'Content-Type': 'application/json',
+      }
+    });
+  }
+  return fetch(url, options);
+};
+
 /**
  * Initialize the Notion client with the API key
- * @param {string} apiKey - Notion API key
- * @param {string} databaseId - Notion database ID
  */
-export const initNotionClient = (apiKey, databaseId) => {
+export const initNotionClient = (apiKey: string, databaseId: string) => {
   NOTION_API_KEY = apiKey;
   NOTION_DATABASE_ID = databaseId;
   
   // Save credentials to localStorage for persistence
-  localStorage.setItem('notion_api_key', apiKey);
-  localStorage.setItem('notion_database_id', databaseId);
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('notion_api_key', apiKey);
+    localStorage.setItem('notion_database_id', databaseId);
+  }
   
   return getNotionClient();
 };
@@ -26,11 +53,11 @@ export const initNotionClient = (apiKey, databaseId) => {
  */
 export const getNotionClient = () => {
   // Try to load from localStorage if not provided
-  if (!NOTION_API_KEY) {
+  if (!NOTION_API_KEY && typeof window !== 'undefined') {
     NOTION_API_KEY = localStorage.getItem('notion_api_key') || '';
   }
   
-  if (!NOTION_DATABASE_ID) {
+  if (!NOTION_DATABASE_ID && typeof window !== 'undefined') {
     NOTION_DATABASE_ID = localStorage.getItem('notion_database_id') || '';
   }
 
@@ -38,13 +65,18 @@ export const getNotionClient = () => {
     return null;
   }
 
-  return new Client({ auth: NOTION_API_KEY });
+  return new Client({ 
+    auth: NOTION_API_KEY,
+    fetch: proxyFetch
+  });
 };
 
 /**
  * Check if the Notion client is configured
  */
-export const isNotionConfigured = () => {
+export const isNotionConfigured = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  
   return !!(
     (NOTION_API_KEY || localStorage.getItem('notion_api_key')) && 
     (NOTION_DATABASE_ID || localStorage.getItem('notion_database_id'))
@@ -54,18 +86,15 @@ export const isNotionConfigured = () => {
 /**
  * Get the configured database ID
  */
-export const getNotionDatabaseId = () => {
+export const getNotionDatabaseId = (): string => {
+  if (typeof window === 'undefined') return '';
   return NOTION_DATABASE_ID || localStorage.getItem('notion_database_id') || '';
 };
 
 /**
  * Save a mood entry to the Notion database
- * @param {Object} moodData - The mood data to save
- * @param {string} moodData.mood - The selected mood
- * @param {string} moodData.emoji - The emoji for the selected mood
- * @param {Date} moodData.date - The date of the mood check-in
  */
-export const saveMoodToNotion = async (moodData) => {
+export const saveMoodToNotion = async (moodData: MoodData) => {
   const notion = getNotionClient();
   
   if (!notion) {
@@ -85,7 +114,6 @@ export const saveMoodToNotion = async (moodData) => {
         database_id: databaseId,
       },
       properties: {
-        // These property names must match your Notion database's property names
         Name: {
           title: [
             {
@@ -134,6 +162,8 @@ export const saveMoodToNotion = async (moodData) => {
 export const clearNotionCredentials = () => {
   NOTION_API_KEY = '';
   NOTION_DATABASE_ID = '';
-  localStorage.removeItem('notion_api_key');
-  localStorage.removeItem('notion_database_id');
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('notion_api_key');
+    localStorage.removeItem('notion_database_id');
+  }
 };

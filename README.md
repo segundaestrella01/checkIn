@@ -1,72 +1,36 @@
-# Daily Mood Check-In
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-A Progressive Web App (PWA) that allows users to track their daily mood states with a simple, intuitive interface.
+## Getting Started
 
-## Purpose
-
-The Daily Mood Check-In app provides a straightforward way for users to record their prevalent mood at the end of each day. This self-reflection practice can help with:
-
-- Mental health awareness
-- Mood pattern recognition
-- Emotional self-awareness
-- Building a personal mood history
-
-## Features
-
-- Select from seven mood states: angry, tired, stressed, anxious, calm, energetic, and happy
-- Each mood is represented by a descriptive emoji for quick visual recognition
-- PWA functionality allows for installation on mobile devices and offline usage
-- Local storage saves mood history directly on the user's device
-- Simple, responsive interface that works well on both desktop and mobile devices
-
-## Tech Stack
-
-- **Frontend Framework**: [Svelte](https://svelte.dev) - A lightweight, component-based JavaScript framework
-- **Build Tool**: [Rollup](https://rollupjs.org) - Module bundler for JavaScript
-- **PWA Features**: Service Workers using [Workbox](https://developers.google.com/web/tools/workbox) for offline capabilities
-- **Server**: [sirv](https://github.com/lukeed/sirv) for static file serving
-- **CSS**: Native CSS with responsive design patterns
-
-## Available Commands
+First, run the development server:
 
 ```bash
-# Install dependencies
-npm install
-
-# Start development server with hot-reloading
 npm run dev
-
-# Build optimized production version
-npm run build
-
-# Serve the production build
-npm run start
-
-# Serve as a SPA (useful for client-side routing)
-sirv public --single
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-## Development
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-The application structure follows Svelte conventions:
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-- `src/` - Contains the application source code
-  - `components/` - Reusable Svelte components
-  - `App.svelte` - Main application component
-  - `main.js` - Application entry point
-- `public/` - Static assets and production build destination
-  - `service-worker.js` - PWA offline functionality
-  - `manifest.json` - PWA installation configuration
-  - `icons/` - App icons for various device sizes
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Customization
+## Learn More
 
-The mood options can be easily customized by modifying the `moods` array in the `src/App.svelte` file.
+To learn more about Next.js, take a look at the following resources:
 
-## Deployment
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-After building the app with `npm run build`, the contents of the `public` directory can be deployed to any static file hosting service like Vercel, Netlify, or GitHub Pages.
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Browser Support
+## Deploy on Vercel
 
-The app supports all modern browsers with PWA capabilities. For the best experience, use the latest versions of Chrome, Firefox, Safari, or Edge.
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
