@@ -22,6 +22,23 @@ export default function ChatRoom({ onTerminate, initialMood }: ChatRoomProps) {
   const [showToast, setShowToast] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Scroll to top and disable body scroll when component mounts
+  useEffect(() => {
+    // Force layout recalculation before scrolling
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'instant'
+      });
+    });
+    
+    document.body.style.overflow = 'hidden';
+    
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -181,9 +198,9 @@ export default function ChatRoom({ onTerminate, initialMood }: ChatRoomProps) {
 
   return (
     <>
-      <div className="flex flex-col h-[calc(100vh-20px)] my-[10px] max-h-screen">
+      <div className="fixed inset-0 flex flex-col h-screen max-h-screen bg-[var(--background-color)]">
         {/* Chat header */}
-        <div className="mb-2 text-center relative flex items-center justify-center">
+        <div className="mb-2 text-center relative flex items-center justify-center pt-4">
           <div>
             <h2 className="text-2xl font-semibold text-gradient mb-1">Mood Reflection</h2>
             <p className="text-[var(--secondary-text-color)]">
@@ -220,8 +237,8 @@ export default function ChatRoom({ onTerminate, initialMood }: ChatRoomProps) {
           </button>
         </div>
 
-        {/* Messages container - adjust flex grow and add padding bottom for content visibility */}
-        <div className="flex-1 overflow-y-auto mb-2 px-4 min-h-0">
+        {/* Messages container */}
+        <div className="flex-1 overflow-y-auto mb-2 px-4">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -254,7 +271,7 @@ export default function ChatRoom({ onTerminate, initialMood }: ChatRoomProps) {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input area and buttons container */}
+        {/* Input area */}
         <div className="px-4 pb-2">
           <div className="flex gap-3 mb-2 items-center">
             <textarea
@@ -268,7 +285,7 @@ export default function ChatRoom({ onTerminate, initialMood }: ChatRoomProps) {
               }}
               placeholder="Type your message..."
               rows={2}
-              className="flex-1 p-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:border-[var(--primary-color)] transition-colors bg-white/90 resize-none min-h-[64px] max-h-[160px] overflow-y-auto"
+              className="flex-1 p-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:border-[var(--primary-color)] transition-colors bg-white/90 resize-none min-h-[64px] max-h-[160px] overflow-y-auto text-[var(--accent-color)]"
               disabled={isLoading || isSaving}
               style={{ scrollbarWidth: 'thin' }}
             />

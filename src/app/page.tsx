@@ -53,10 +53,12 @@ export default function Home() {
             <MoodForm onMoodSubmit={handleMoodSubmit} />
           </div>
           <div 
-            className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${
+            className={`transition-opacity duration-300 ease-in-out ${
               showChat ? 'opacity-100' : 'opacity-0'
             }`}
-            style={{ pointerEvents: showChat ? 'auto' : 'none' }}
+            style={{ 
+              pointerEvents: showChat ? 'auto' : 'none'
+            }}
           >
             {selectedMood && (
               <ChatRoom 
