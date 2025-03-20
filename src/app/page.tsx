@@ -12,15 +12,13 @@ interface MoodOption {
 }
 
 export default function Home() {
-  const [notionConfigured, setNotionConfigured] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [selectedMood, setSelectedMood] = useState<MoodOption | null>(null);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     const init = async () => {
-      const notionStatus = await isNotionConfigured();
-      setNotionConfigured(notionStatus);
+      await isNotionConfigured();
     };
 
     init();
