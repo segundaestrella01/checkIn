@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import { saveMoodToNotion } from '@/lib/notion';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -131,12 +130,25 @@ export default function ChatRoom({ onTerminate, initialMood }: ChatRoomProps) {
 
       // Save to Notion with the reflection note
       setIsSaving(true);
-      await saveMoodToNotion({
-        mood: initialMood.name,
-        emoji: initialMood.emoji,
-        date: new Date(),
-        reflectionNote: finalNote
+      const notionResponse = await fetch('/api/notion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'saveMood',
+          data: {
+            mood: initialMood.name,
+            emoji: initialMood.emoji,
+            date: new Date(),
+            reflectionNote: finalNote
+          }
+        }),
       });
+
+      if (!notionResponse.ok) {
+        throw new Error('Failed to save to Notion');
+      }
 
       // Wait a moment to show the final messages before ending
       setTimeout(() => {
