@@ -70,11 +70,10 @@ export default function MoodForm({ onMoodSubmit }: MoodFormProps) {
           />
         ))}
       </div>
-
-      <div className="text-center bottom-8 left-0 right-0 md:static">
+      <div className="text-center w-full">
         <button
           className={`
-            px-12 py-4 rounded-full text-lg font-medium transition-all
+            px-12 py-4 rounded-full text-lg font-medium 
             ${selectedMood 
               ? 'bg-gradient text-white hover:opacity-90 shadow-lg' 
               : 'bg-gray-100 text-gray-400 cursor-not-allowed'
