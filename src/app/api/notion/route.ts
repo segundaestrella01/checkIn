@@ -1,24 +1,31 @@
 import { Client } from "@notionhq/client";
 import { NextResponse } from "next/server";
 
-// Initialize Notion client with API key from request
-const getNotionClient = (apiKey: string) => {
+// Initialize Notion client with API key from environment
+const getNotionClient = () => {
+  const apiKey = process.env.NOTION_API_KEY;
+  if (!apiKey) {
+    throw new Error("Notion API key is not configured");
+  }
   return new Client({ auth: apiKey });
 };
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { action, apiKey, databaseId, data } = body;
+    const { action, data } = body;
+
+    const apiKey = process.env.NOTION_API_KEY;
+    const databaseId = process.env.NOTION_DATABASE_ID;
 
     if (!apiKey || !databaseId) {
       return NextResponse.json(
-        { error: "API key and database ID are required" },
-        { status: 400 }
+        { error: "Notion is not properly configured. Please check your environment variables." },
+        { status: 500 }
       );
     }
 
-    const notion = getNotionClient(apiKey);
+    const notion = getNotionClient();
 
     switch (action) {
       case 'saveMood':
@@ -28,8 +35,9 @@ export async function POST(request: Request) {
             { status: 400 }
           );
         }
-        
-        const response = await notion.pages.create({
+        console.log('Saving mood data to Notion:', data);
+        // Create the main page first
+        const pageResponse = await notion.pages.create({
           parent: {
             database_id: databaseId,
           },
@@ -60,7 +68,30 @@ export async function POST(request: Request) {
           }
         });
 
-        return NextResponse.json(response);
+        // If there's a reflection note, add it as a paragraph block
+        if (data.reflectionNote) {
+          await notion.blocks.children.append({
+            block_id: pageResponse.id,
+            children: [
+              {
+                object: 'block',
+                type: 'paragraph',
+                paragraph: {
+                  rich_text: [
+                    {
+                      type: 'text',
+                      text: {
+                        content: data.reflectionNote
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          });
+        }
+        console.log('Page created in Notion:', pageResponse);
+        return NextResponse.json(pageResponse);
 
       default:
         return NextResponse.json(
@@ -69,9 +100,9 @@ export async function POST(request: Request) {
         );
     }
   } catch (error) {
-    console.error('Error processing Notion request:', error);
+    console.error('Error in Notion API:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Unknown error' },
+      { error: "Failed to process the request" },
       { status: 500 }
     );
   }

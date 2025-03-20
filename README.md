@@ -1,8 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Daily Mood Check-In
+
+A modern web application for tracking your daily moods and emotional well-being, with AI-powered reflective conversations and Notion integration.
+
+## Features
+
+- 📱 Progressive Web App (PWA) - Install on any device
+- 🎯 Simple mood selection with emojis
+- 🤖 AI-powered chat conversations to help you reflect on your emotions
+- 📝 Automatic conversation summaries
+- 📊 Notion integration for long-term mood tracking
+- 🎨 Beautiful, responsive UI with smooth animations
+- 🌙 Clean, modern design
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+Before running the application, you'll need:
+
+1. Node.js 16.14 or later
+2. An OpenAI API key for the chat functionality
+3. A Notion API key and database ID (optional, for mood tracking)
+
+### Environment Setup
+
+1. Clone the repository
+2. Create a `.env.local` file in the root directory with:
+   ```
+   OPENAI_API_KEY=your_api_key_here
+   ```
+
+### Notion Database Setup (Optional)
+
+If you want to use the Notion integration:
+
+1. Create a new Notion database with the following properties:
+   - Name (title)
+   - Emoji (rich text)
+   - Date (date)
+2. Share the database with your integration
+3. Configure your Notion credentials in the app settings
+
+### Installation
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+### Running the Development Server
 
 ```bash
 npm run dev
@@ -10,27 +59,36 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How It Works
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Mood Selection**: Choose from a variety of moods that best represents how you're feeling
+2. **AI Conversation**: After selecting your mood, engage in a reflective conversation with an AI counselor
+3. **Smart Summary**: When ending the session, the AI provides a concise summary of your conversation
+4. **Notion Integration**: Your mood and reflection are automatically saved to your Notion database (if configured)
 
-## Learn More
+## Development
 
-To learn more about Next.js, take a look at the following resources:
+The project uses:
+- Next.js 14+ with App Router
+- TypeScript for type safety
+- Tailwind CSS for styling
+- OpenAI API for chat functionality
+- Notion API for data storage
+- PWA capabilities for install-ability
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Deploy on Vercel with one click:
 
-## Deploy on Vercel
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Fcheckin-next)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Remember to set up your environment variables in your Vercel project settings:
+- `OPENAI_API_KEY`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT License - feel free to use this project for your own purposes.
