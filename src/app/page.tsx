@@ -134,7 +134,7 @@ export default function Home() {
                     <span className="text-4xl">{selectedMood?.emoji}</span>
                   </div>
                   <h2 className="text-3xl font-bold mb-4 text-gradient">Mood Recorded!</h2>
-                  <p className="text-xl mb-6 text-gray-600">You're feeling {selectedMood?.name.toLowerCase()}</p>
+                  <p className="text-xl mb-6 text-gray-600">You are feeling {selectedMood?.name.toLowerCase()}</p>
 
                   <button
                     className="px-8 py-3 bg-white text-[var(--text-color)] rounded-full hover:bg-gray-50 transition-colors shadow-md mt-4"

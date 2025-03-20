@@ -186,7 +186,7 @@ export default function ChatRoom({ onTerminate, initialMood }: ChatRoomProps) {
         <div className="mb-4 text-center">
           <h2 className="text-2xl font-semibold text-gradient mb-2">Mood Reflection</h2>
           <p className="text-[var(--secondary-text-color)]">
-            Let's talk about your {initialMood.name.toLowerCase()} mood {initialMood.emoji}
+            Lets talk about your {initialMood.name.toLowerCase()} mood {initialMood.emoji}
           </p>
         </div>
 
