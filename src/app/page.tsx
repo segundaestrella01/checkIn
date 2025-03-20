@@ -37,7 +37,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[var(--background-color)]">
-      <div className="w-full h-full md:max-w-4xl md:mx-auto px-4 py-8">
+      <div className="w-full h-full md:max-w-4xl md:mx-auto px-4 mt-4">
         {showChat && selectedMood ? (
           <ChatRoom 
             initialMood={{
